@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
+
+import { useNavigate } from "react-router-dom";
+
 import { Link } from 'react-router-dom';
 import '../Styles/Packages.css';
 import paris from '../assets/Packages/paris-gateway.jpg';
@@ -31,6 +34,8 @@ import southkorea from '../assets/Packages/southkorea.webp';
 import spain from '../assets/Packages/spain.jpeg';
 import turkey from '../assets/Packages/turkey.jpg';
 import vietnam from '../assets/Packages/vietnam.jpg';
+import LoginModal from './LoginModal';
+import { FaTimes } from "react-icons/fa";
 
 
 const Packages = () => {
@@ -276,32 +281,102 @@ const Packages = () => {
   description: 'Petra, Dead Sea, and desert camping.',
 }
   ];
+const [showModal, setShowModal] = useState(false);
+const [otpSent, setOtpSent] = useState(false);
+const [mobile, setMobile] = useState("");
+const [otp, setOtp] = useState("");
+const navigate = useNavigate(); // from react-router-dom
+const [selectedPackage, setSelectedPackage] = useState(null);
 
-  return (
-    <section className="packages">
-      <div className="packages-container">
-        <h2>Our Travel Packages</h2>
-        <div className="package-grid">
-          {packages.map((pkg) => (
-            <div key={pkg.id} className="package-card">
-              <img src={pkg.image} alt={pkg.title} />
-              <div className="package-details">
-                <h3>{pkg.title}</h3>
-                <p>{pkg.duration}</p>
-                <p>{pkg.description}</p>
-                <span className="price">{pkg.price}</span>
-                <Link to="/booking" className="book-btn">Book Now</Link>
-              </div>
+const handleBookClick = (pkg) => {
+  setSelectedPackage(pkg);
+  setShowModal(true);
+};
+
+const handleSendOtp = () => {
+  if (mobile.length === 10) {
+    setOtpSent(true);
+  } else {
+    alert("Enter a valid 10-digit number");
+  }
+};
+
+const handleVerifyOtp = () => {
+  if (otp === "123456") {
+    setShowModal(false);
+    navigate("/booking"); // redirect to booking
+  } else {
+    alert("Incorrect OTP. Try 123456.");
+  }
+};
+
+const handleCloseModal = () => {
+  setShowModal(false);
+  setOtpSent(false);
+  setOtp("");
+  setMobile("");
+};
+
+ return (
+  <section className="packages">
+    <div className="packages-container">
+      <h2>Our Travel Packages</h2>
+      <div className="package-grid">
+        {packages.map((pkg) => (
+          <div key={pkg.id} className="package-card">
+            <img src={pkg.image} alt={pkg.title} />
+            <div className="package-details">
+              <h3>{pkg.title}</h3>
+              <p>{pkg.duration}</p>
+              <p>{pkg.description}</p>
+              <span className="price">{pkg.price}</span>
+              <button className="book-btn" onClick={() => handleBookClick(pkg)}>Book Now</button>
             </div>
-          ))}
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Login Modal */}
+    {showModal && (
+      <div className="modal-overlay">
+        <div className="login-modal">
+          <h3>{otpSent ? "Enter OTP" : "Login to Continue"}</h3>
+          {!otpSent ? (
+            <>
+              <input
+                type="tel"
+                placeholder="Enter Mobile Number"
+                value={mobile}
+                onChange={(e) => setMobile(e.target.value)}
+              />
+              <button onClick={handleSendOtp}>Send OTP</button>
+            </>
+          ) : (
+            <>
+              <input
+                type="text"
+                placeholder="Enter OTP"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+              />
+              <button onClick={handleVerifyOtp}>Verify OTP</button>
+            </>
+          )}
+         <button className="close-btn" onClick={handleCloseModal}>
+  <FaTimes size={24} />
+</button>
+
         </div>
       </div>
-      <footer className="packages-footer">
-  <p>&copy; {new Date().getFullYear()} GoTrip. All rights reserved.</p>
-</footer>
+    )}
 
-    </section>
-  );
+    <footer className="packages-footer">
+      <p>&copy; {new Date().getFullYear()} GoTrip. All rights reserved.</p>
+    </footer>
+  </section>
+);
+
 };
 
 export default Packages;
