@@ -11,6 +11,8 @@ import Packages from './Components/Packages'; // Additional page
 import AboutPage from './Components/AboutPage';
 import ContactPage from './Components/ContactPage';
 import BookingForm from './Components/BookingForm';
+import PaymentPage from './Components/PaymentPage';
+import ThankYouPage from './Components/ThankYouPage';
 
 function App() {
   return (
@@ -34,6 +36,8 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/booking" element={<BookingForm />} />
+        <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/thankyou" element={<ThankYouPage />} />
         {/* You can add more pages like /contact, /booking here */}
       </Routes>
     </>
